@@ -1,10 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Employee_API.Models
+namespace Employee_API.Persistence.Entities
 {
-    public class Employe
+    [Table("Employes"), Index(nameof(Matricule), IsUnique = true)]
+    public class Employe : AuditableEntity
     {
-        public Guid Id { get; set; }
+        [Required(ErrorMessage = "Matricule is required")]
+        public string Matricule { get; set; }
         [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }    
         public string? LastName { get; set; } = string.Empty;
