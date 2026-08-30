@@ -31,16 +31,24 @@ builder.Services.AddOpenApi();
 var app = builder.Build();
 
 // Configure Scalar API Reference
-app.MapOpenApi();
-app.MapScalarApiReference(options =>
+
+if (app.Environment.IsDevelopment())
 {
-    options.WithTitle("Employee API Documentation");
-    options.WithTheme(ScalarTheme.BluePlanet);
-    options.WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
-});
+    app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+    {
+        options.WithTitle("Employee API Documentation");
+        options.WithTheme(ScalarTheme.BluePlanet);
+        options.WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+       
+    });
+    app.UseHttpsRedirection();
+}
+
 
 app.UseCors("AllowManagement");
-app.UseHttpsRedirection();
+app.MapControllers();
+
 app.UseHsts();
 
 await app.RunAsync();
