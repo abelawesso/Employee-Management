@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.InMemory;
 using Microsoft.AspNetCore.OpenApi;
 using Scalar.AspNetCore;
+using Employee_API.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,12 +24,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.EnableSensitiveDataLogging();
 });
 
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
-
-app.MapGet("/", () => "Hello World!");
-
 
 // Configure Scalar API Reference
 app.MapOpenApi();
