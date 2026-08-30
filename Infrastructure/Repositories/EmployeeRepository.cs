@@ -35,8 +35,7 @@ namespace Employee_API.Infrastructure.Repositories
 
                 _logger.LogInformation("Adding a new employee with Matricule: {Matricule}", employe.Matricule);
 
-                using (var transaction = await _dbContext.Database.BeginTransactionAsync())
-                {
+               
                     await _dbContext.Employes.AddAsync(new Employe
                     {
                         Matricule = employe.Matricule,
@@ -44,15 +43,17 @@ namespace Employee_API.Infrastructure.Repositories
                         LastName = employe.LastName,
                         Email = employe.Email,
                         DateOfBirth = employe.DateOfBirth,
-                        Position = employe.Position
+                        Position = employe.Position,
+                        CreatedBy = "System", // You can replace this with the actual user if available
+                        CreatedAt = DateTime.UtcNow
+
                     });
                     await _dbContext.SaveChangesAsync();
-                    await transaction.CommitAsync();
-                }
+                
             }
             catch (Exception ex)
             {
-                await _dbContext.Database.RollbackTransactionAsync();
+             
                 _logger.LogError(ex, "An error occurred while adding an employee. Matricule: {Matricule}", employe.Matricule);
                 throw;
             }
@@ -97,8 +98,7 @@ namespace Employee_API.Infrastructure.Repositories
                 _logger.LogWarning("Attempted to update employee with Matricule: {Matricule}, but it was not found.", employe.Matricule);
                 throw new KeyNotFoundException($"Employee with Matricule {employe.Matricule} not found.");
             }
-            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
-            {
+           
                 try
                 {
                     oldEmployee.Name = employe.Name;
@@ -106,16 +106,17 @@ namespace Employee_API.Infrastructure.Repositories
                     oldEmployee.Email = employe.Email;
                     oldEmployee.DateOfBirth = employe.DateOfBirth;
                     oldEmployee.Position = employe.Position;
-                    await _dbContext.SaveChangesAsync();
-                    await transaction.CommitAsync();
+                    oldEmployee.UpdatedAt = DateTime.UtcNow;
+                    oldEmployee.UpdatedBy = "System"; // You can replace this with the actual user if available
+                await _dbContext.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
-                    await transaction.RollbackAsync();
+              
                     _logger.LogError(ex, "An error occurred while updating employee with Matricule: {Matricule}", employe.Matricule);
                     throw;
                 }
             }   
         }
     }
-}
+
