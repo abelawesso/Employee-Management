@@ -12,7 +12,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowManagement", policy =>
     {
-        policy.WithOrigins("https://localhost:4200")
+        policy.WithOrigins("http://localhost:4200")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -45,10 +45,8 @@ if (app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
-
 app.UseCors("AllowManagement");
 app.MapControllers();
-
 app.UseHsts();
 
 await app.RunAsync();

@@ -39,7 +39,7 @@ namespace Employee_API.Infrastructure.Controllers
                 return BadRequest("Employee data is null.");
             }
             await _employeeRepository.AddEmployeAsync(employee);
-            return CreatedAtAction(nameof(GetByMatricule), new { matricule = employee.Matricule });
+            return CreatedAtAction(nameof(GetByMatricule), new { matricule = employee.Matricule }, employee);
         }
 
         /// <summary>
